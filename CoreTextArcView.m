@@ -6,11 +6,11 @@
  draw text on a curve.
  
  Based on CoreTextArcView provided by Apple for Mac OS X https://developer.apple.com/library/mac/#samplecode/CoreTextArcCocoa/Introduction/Intro.html
-
+ 
  Ported to iOS (& added color, arcsize features) August 2011 by Alec Vance, Juggleware LLC http://juggleware.com/
  
-
- */ 
+ 
+ */
 
 #import "CoreTextArcView.h"
 #import <AssertMacros.h>
@@ -104,9 +104,9 @@ static void PrepareGlyphArcInfo(CTLineRef line, CFIndex glyphCount, GlyphArcInfo
 
 - (void)drawRect:(CGRect)rect {
 	// Don't draw if we don't have a font or string
-	if (self.font == NULL || self.text == NULL) 
+	if (self.font == NULL || self.text == NULL)
 		return;
-
+    
 	// Initialize the text matrix to a known value
 	CGContextRef context = UIGraphicsGetCurrentContext();
     
@@ -121,18 +121,18 @@ static void PrepareGlyphArcInfo(CTLineRef line, CFIndex glyphCount, GlyphArcInfo
     t0 = CGAffineTransformInvert(t0);
     if (xScaleFactor != 1.0 || yScaleFactor != 1.0)
         t0 = CGAffineTransformScale(t0, xScaleFactor, yScaleFactor);
-
-//    t0.b = 0.0;
-//    t0.a = 1.0;
-//    t0 = CGAffineTransformTranslate(t0, _shiftH, _shiftV);
+    
+    //    t0.b = 0.0;
+    //    t0.a = 1.0;
+    //    t0 = CGAffineTransformTranslate(t0, _shiftH, _shiftV);
     
     CGContextConcatCTM(context, t0);
-
     
-       
+    
+    
     
 	CGContextSetTextMatrix(context, CGAffineTransformIdentity);
-   
+    
     if(ARCVIEW_DEBUG_MODE){
         // Draw a black background (debug)
         CGContextSetFillColorWithColor(context, [UIColor blackColor].CGColor);
@@ -157,7 +157,7 @@ static void PrepareGlyphArcInfo(CTLineRef line, CFIndex glyphCount, GlyphArcInfo
 	CGContextSaveGState(context);
     
 	CGContextTranslateCTM(context, CGRectGetMidX(rect)+_shiftH, CGRectGetMidY(rect)+_shiftV - self.radius / 2.0);
-
+    
     if(ARCVIEW_DEBUG_MODE){
         // Stroke the arc in red for verification.
         CGContextBeginPath(context);
@@ -207,10 +207,10 @@ static void PrepareGlyphArcInfo(CTLineRef line, CFIndex glyphCount, GlyphArcInfo
 			textMatrix.tx = positionForThisGlyph.x;
 			textMatrix.ty = positionForThisGlyph.y;
 			CGContextSetTextMatrix(context, textMatrix);
-                
+            
 			if (!drawSubstitutedGlyphsManually) {
 				CTRunDraw(run, context, glyphRange);
-			} 
+			}
 			else {
 				// We need to draw the glyphs manually in this case because we are effectively applying a graphics operation by setting the context fill color. Normally we would use kCTForegroundColorAttributeName, but this does not apply as we don't know the ranges for the colors in advance, and we wanted demonstrate how to manually draw.
 				CGFontRef cgFont = CTFontCopyGraphicsFont(runFont, NULL);
@@ -228,7 +228,7 @@ static void PrepareGlyphArcInfo(CTLineRef line, CFIndex glyphCount, GlyphArcInfo
 				CFRelease(cgFont);
 			}
 			
-			// Draw the glyph bounds 
+			// Draw the glyph bounds
 			if ((self.showsGlyphBounds) != 0) {
 				CGRect glyphBounds = CTRunGetImageBounds(run, context, glyphRange);
 				
@@ -245,7 +245,7 @@ static void PrepareGlyphArcInfo(CTLineRef line, CFIndex glyphCount, GlyphArcInfo
 				// The glyph is centered around the y-axis
 				lineMetrics.origin.x = -halfGlyphWidth;
 				lineMetrics.origin.y = positionForThisGlyph.y - descent;
-				lineMetrics.size.width = glyphWidth; 
+				lineMetrics.size.width = glyphWidth;
 				lineMetrics.size.height = ascent + descent;
 				
 				CGContextSetRGBStrokeColor(context, 0.0, 1.0, 0.0, 1.0);
@@ -259,10 +259,10 @@ static void PrepareGlyphArcInfo(CTLineRef line, CFIndex glyphCount, GlyphArcInfo
 	CGContextRestoreGState(context);
 	
 	free(glyphArcInfo);
-	CFRelease(line);	
-   
+	CFRelease(line);
     
-
+    
+    
 }
 
 @synthesize font = _font;
@@ -286,18 +286,20 @@ static void PrepareGlyphArcInfo(CTLineRef line, CFIndex glyphCount, GlyphArcInfo
     
     // color
 	CGColorRef colorRef = self.color.CGColor;
-
+    
     // pack it into attributes dictionary
-
+    
 	NSDictionary *attributesDict = [NSDictionary dictionaryWithObjectsAndKeys:
                                     (__bridge id)fontRef, (id)kCTFontAttributeName,
                                     colorRef, (id)kCTForegroundColorAttributeName,
                                     nil];
 	assert(attributesDict != nil);
-
+    
 	
 	// Create the attributed string
 	NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:self.text attributes:attributesDict];
+    
+    CFRelease(fontRef);
     
 	return attrString;
 }

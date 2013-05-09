@@ -10,6 +10,3 @@ Juggleware LLC http://juggleware.com/
 
 For discussion, see Stack Overflow entry here: 
 http://stackoverflow.com/questions/3841642/curve-text-on-existing-circle/7114184#7114184
-
-
-
